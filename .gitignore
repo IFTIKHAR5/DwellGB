@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.local
+_v1_backup/
+*.log
+.DS_Store
+
+# Full-size originals of the site photos (the site uses the .webp copies in frontend/public/images)
+frontend/image-originals/
+# Design preview screenshots, not part of the app
+Claude outputs/

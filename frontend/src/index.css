@@ -1,0 +1,314 @@
+@import "tailwindcss";
+@import "tw-animate-css"; /* animations used by shadcn/ui (dialogs, menus, tooltips) */
+
+/*
+  DwellGB design system — "Karakoram Dusk"
+  Neutral stone background, deep glacier-indigo for structure, Hunza apricot for
+  actions, and a sunset gradient (apricot → rose → violet → glacier blue) used
+  sparingly for highlights, animated borders and the main buttons.
+  Fonts: Bricolage Grotesque (headings), Geist (text), Instrument Serif (italic
+  accents), Noto Nastaliq Urdu (Urdu).
+*/
+@theme {
+  --color-canvas: #F7F6F3;
+  --color-surface: #FFFFFF;
+  --color-sunken: #F1EFEA;
+  --color-line: #E7E4DD;
+  --color-line-strong: #D6D1C7;
+
+  --color-ink: #0E1220;
+  --color-ink-2: #434A5C;
+  --color-muted: #737889;
+
+  /* action colour: Hunza apricot */
+  --color-brand: #FF6A33;
+  --color-brand-600: #EE5520;
+  --color-brand-700: #C8431A;
+  --color-brand-50: #FFF3EC;
+  --color-brand-100: #FFDDCA;
+
+  /* structure colour: glacier night (kept the name "pine" so every page updates) */
+  --color-pine: #1F2A6E;
+  --color-pine-600: #19225B;
+  --color-pine-800: #111843;
+  --color-pine-900: #0A0F2C;
+  --color-pine-50: #EEF1FF;
+  --color-pine-100: #DCE2FF;
+
+  /* accent colours for gradients, tags and illustrations */
+  --color-rose: #F23F78;
+  --color-violet: #7C5CFF;
+  --color-glacier: #14B4CC;
+  --color-meadow: #22A55B;
+  --color-highlight: #FFC2A1; /* light apricot for text on dark photos */
+
+  --color-gold: #F2A93B;
+  --color-chart: #4B5BD6;
+  --color-success: #1C9A5E;
+  --color-success-50: #E6F6EE;
+  --color-danger: #E0384B;
+  --color-danger-50: #FDECEE;
+  --color-warning: #B7791F;
+  --color-warning-50: #FDF4E3;
+
+  /* ---- shadcn/ui tokens, mapped onto the DwellGB palette ---- */
+  --color-background: #F7F6F3;
+  --color-foreground: #0E1220;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #0E1220;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #0E1220;
+  --color-primary: #1F2A6E;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #F1EFEA;
+  --color-secondary-foreground: #0E1220;
+  --color-accent: #F1EFEA;
+  --color-accent-foreground: #0E1220;
+  --color-destructive: #E0384B;
+  --color-muted-foreground: #6B7183;
+  --color-border: #E7E4DD;
+  --color-input: #D6D1C7;
+  --color-ring: #1F2A6E;
+
+  --font-sans: 'Geist', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+
+  --shadow-card: 0 1px 2px rgb(14 18 32 / 0.04), 0 4px 18px -8px rgb(14 18 32 / 0.10);
+  --shadow-lift: 0 2px 4px rgb(14 18 32 / 0.04), 0 22px 44px -14px rgb(14 18 32 / 0.26);
+  --shadow-pop: 0 12px 44px -10px rgb(10 15 44 / 0.42);
+
+  --animate-fade-in: fade-in 0.25s ease-out both;
+  --animate-slide-up: slide-up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-shimmer: shimmer 1.4s linear infinite;
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes slide-up { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+  @keyframes shimmer { from { background-position: -400px 0 } to { background-position: 400px 0 } }
+  @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+}
+
+/* Angle used by the rotating "border beam" around buttons and badges. */
+@property --beam-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@keyframes beam-spin { to { --beam-angle: 360deg; } }
+@keyframes gradient-pan { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+@keyframes aurora { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(4%, -6%) scale(1.08); } }
+
+:root {
+  --gradient-sunset: linear-gradient(100deg, #FF8A3D 0%, #F23F78 34%, #7C5CFF 68%, #14B4CC 100%);
+  --gradient-action: linear-gradient(135deg, #FF7A3D 0%, #F2506F 100%);
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip; /* decorative blobs never cause sideways scrolling on phones */
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.025em; font-optical-sizing: auto; }
+  .font-serif { font-weight: 400; letter-spacing: -0.01em; }
+  ::selection { background: var(--color-brand-100); color: var(--color-ink); }
+  :focus-visible { outline: 2px solid var(--color-violet); outline-offset: 2px; border-radius: 6px; }
+  * { border-color: var(--color-line); }
+
+  html[lang='ur'] body,
+  html[lang='ur'] h1, html[lang='ur'] h2, html[lang='ur'] h3, html[lang='ur'] h4 {
+    font-family: 'Noto Nastaliq Urdu', var(--font-sans);
+    letter-spacing: 0;
+  }
+  html[lang='ur'] body { line-height: 2; }
+  html[lang='ur'] .font-serif, html[lang='ur'] .font-display { font-family: 'Noto Nastaliq Urdu', var(--font-sans); }
+  /* numbers/prices stay Latin for readability */
+  html[lang='ur'] .ltr-nums { direction: ltr; unicode-bidi: isolate; font-family: var(--font-sans); }
+  /* Nastaliq has tall letters: tight heading line-heights (leading-[1.05], leading-tight…)
+     make wrapped Urdu headings overlap, especially on phones where they wrap more. */
+  html[lang='ur'] :is(h1, h2, h3) { line-height: 1.7 !important; }
+
+  /* Phones: iOS Safari zooms the whole page when a field with text under 16px is focused,
+     and leaves it zoomed. 16px on small screens stops that for every input on the site. */
+  @media (max-width: 639px) {
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+    select, textarea { font-size: 16px !important; }
+  }
+  /* iOS gives date fields a built-in minimum width that can overflow narrow columns. */
+  input[type='date'] { min-width: 0; }
+  /* Pages with a fixed bottom bar on phones (listing page): keep the footer above it. */
+  @media (max-width: 1023px) { body.has-bottom-bar { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); } }
+}
+
+@layer components {
+  .container-page { width: 100%; max-width: 1240px; margin-inline: auto; padding-inline: 1rem; }
+  @media (min-width: 640px) { .container-page { padding-inline: 1.5rem; } }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    height: 2.75rem; padding-inline: 1.15rem; border-radius: 0.8rem;
+    font-weight: 600; font-size: 0.925rem; white-space: nowrap;
+    transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform .1s;
+    cursor: pointer; user-select: none;
+  }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .btn-sm { height: 2.25rem; padding-inline: .85rem; font-size: .85rem; border-radius: .65rem; }
+  .btn-lg { height: 3.25rem; padding-inline: 1.5rem; font-size: 1rem; border-radius: .95rem; }
+  /* Main action: apricot→rose gradient with a light sweep on hover (Magic UI "shiny button") */
+  .btn-primary {
+    position: relative; overflow: hidden; isolation: isolate;
+    background: var(--gradient-action); color: #fff;
+    box-shadow: 0 1px 0 rgb(255 255 255 / .25) inset, 0 8px 20px -10px rgb(242 80 111 / .8);
+  }
+  .btn-primary::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / .35) 50%, transparent 70%);
+    transform: translateX(-120%); transition: transform .7s ease;
+  }
+  .btn-primary:hover:not(:disabled)::after { transform: translateX(120%); }
+  .btn-primary:hover:not(:disabled) { box-shadow: 0 1px 0 rgb(255 255 255 / .25) inset, 0 12px 26px -10px rgb(242 80 111 / .9); }
+  .btn-dark { background: var(--color-pine); color: #fff; }
+  /* Charcoal button matching the logo (used on login / sign-up). */
+  .btn-ink { background: #111318; color: #fff; box-shadow: 0 10px 24px -14px rgb(17 19 24 / .9); }
+  .btn-ink:hover:not(:disabled) { background: #23262e; }
+  .btn-dark:hover:not(:disabled) { background: var(--color-pine-600); }
+  .btn-secondary { background: var(--color-surface); color: var(--color-ink); border: 1px solid var(--color-line-strong); }
+  .btn-secondary:hover:not(:disabled) { background: var(--color-sunken); }
+  .btn-ghost { background: transparent; color: var(--color-ink-2); }
+  .btn-ghost:hover:not(:disabled) { background: var(--color-sunken); color: var(--color-ink); }
+  .btn-danger { background: var(--color-danger); color: #fff; }
+  .btn-danger:hover:not(:disabled) { background: #b32a30; }
+  .btn-icon { width: 2.5rem; height: 2.5rem; padding: 0; border-radius: 999px; }
+
+  .input {
+    width: 100%; height: 2.9rem; padding-inline: .95rem; border-radius: .8rem;
+    background: var(--color-surface); border: 1px solid var(--color-line-strong);
+    color: var(--color-ink); font-size: .95rem;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  textarea.input { height: auto; padding-block: .75rem; line-height: 1.55; resize: vertical; }
+  select.input { appearance: none; padding-inline-end: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237A7F8C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right .8rem center; }
+  html[dir='rtl'] select.input { background-position: left .8rem center; }
+  .input::placeholder { color: #a3a6ae; }
+  .input:hover { border-color: #bdb6a9; }
+  .input:focus { outline: none; border-color: var(--color-violet); box-shadow: 0 0 0 4px rgb(124 92 255 / .14); }
+  .input[aria-invalid='true'] { border-color: var(--color-danger); box-shadow: 0 0 0 4px rgb(224 56 75 / .1); }
+
+  .label { display: block; font-size: .85rem; font-weight: 600; color: var(--color-ink-2); margin-bottom: .4rem; }
+
+  .card { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 1.25rem; box-shadow: var(--shadow-card); }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: .4rem; height: 2.25rem; padding-inline: .9rem;
+    border-radius: 999px; border: 1px solid var(--color-line-strong); background: var(--color-surface);
+    font-size: .85rem; font-weight: 500; color: var(--color-ink-2); transition: all .15s; cursor: pointer;
+  }
+  .chip:hover { border-color: var(--color-ink-2); color: var(--color-ink); }
+  .chip[data-active='true'] { background: var(--color-pine); border-color: var(--color-pine); color: #fff; }
+
+  .skeleton {
+    background: linear-gradient(90deg, #ecebe7 0px, #f6f5f2 160px, #ecebe7 320px);
+    background-size: 800px 100%; animation: var(--animate-shimmer); border-radius: .75rem;
+  }
+
+  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: #d6d1c7 transparent; }
+
+  /* ---------- "pro" effects (inspired by Aceternity UI / Magic UI) ---------- */
+
+  /* Rotating gradient line around an element: add .beam to any button, badge or card. */
+  .beam { position: relative; isolation: isolate; }
+  .beam::before {
+    content: ''; position: absolute; inset: -1.5px; border-radius: inherit; z-index: -1; padding: 1.5px;
+    background: conic-gradient(from var(--beam-angle), transparent 0deg 220deg, #FF8A3D 260deg, #F23F78 300deg, #7C5CFF 330deg, #14B4CC 360deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: beam-spin 4s linear infinite;
+  }
+
+  /* Sunset gradient text, slowly moving. */
+  .text-gradient {
+    background: var(--gradient-sunset); background-size: 200% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: gradient-pan 8s linear infinite;
+  }
+  /* Lighter version for text on dark photos. */
+  .text-gradient-light {
+    background: linear-gradient(100deg, #FFC2A1 0%, #FF9DBA 35%, #C9B8FF 70%, #9FE7F2 100%); background-size: 200% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: gradient-pan 8s linear infinite;
+  }
+
+  /* Gold from the logo. */
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #F2CF83 0%, #C8923B 55%, #E3BC6C 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  /* Card whose border lights up with the gradient on hover. */
+  .card-glow { position: relative; isolation: isolate; transition: transform .25s, box-shadow .25s; }
+  .card-glow::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; z-index: 1; pointer-events: none;
+    background: var(--gradient-sunset); opacity: 0; transition: opacity .25s;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+  .card-glow:hover::before { opacity: 1; }
+  .card-glow:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+
+  /* Small gradient-filled icon tile. */
+  .icon-tile {
+    display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; border-radius: 1rem;
+    color: #fff; background: var(--gradient-action); box-shadow: 0 8px 20px -10px rgb(242 80 111 / .8);
+  }
+  .icon-tile[data-tone='violet'] { background: linear-gradient(135deg, #7C5CFF, #4B5BD6); box-shadow: 0 8px 20px -10px rgb(124 92 255 / .8); }
+  .icon-tile[data-tone='glacier'] { background: linear-gradient(135deg, #14B4CC, #1F7FD6); box-shadow: 0 8px 20px -10px rgb(20 180 204 / .8); }
+  .icon-tile[data-tone='meadow'] { background: linear-gradient(135deg, #22A55B, #14B4CC); box-shadow: 0 8px 20px -10px rgb(34 165 91 / .8); }
+
+  /* Faint dot grid background. */
+  .bg-dots {
+    background-image: radial-gradient(rgb(14 18 32 / .09) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  /* Soft moving colour blobs (aurora). Put inside a relative, overflow-hidden parent. */
+  .aurora { position: absolute; border-radius: 999px; filter: blur(60px); opacity: .55; animation: aurora 14s ease-in-out infinite; pointer-events: none; }
+
+  /* Gradient line used as a section accent. */
+  .rule-gradient { height: 3px; width: 3rem; border-radius: 999px; background: var(--gradient-sunset); }
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+}
+
+/* ---------- Mapbox marker pills ---------- */
+.price-marker {
+  font-family: var(--font-display); font-weight: 700; font-size: 12.5px;
+  padding: 5px 10px; border-radius: 999px; background: #fff; color: var(--color-ink);
+  box-shadow: 0 2px 8px rgb(0 0 0 / .18), 0 0 0 1px rgb(0 0 0 / .06);
+  cursor: pointer; white-space: nowrap; transition: transform .15s, background .15s, color .15s;
+}
+.price-marker:hover, .price-marker[data-active='true'] { background: var(--gradient-action); color: #fff; transform: scale(1.08); z-index: 5; }
+.price-marker[data-rented='true'] { background: #ECEBE7; color: var(--color-muted); }
+
+/* ---------- Map / Satellite switch (lib/mapbox.js → StyleSwitcher) ---------- */
+.map-style-switch {
+  display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96); box-shadow: 0 2px 10px rgba(17, 19, 24, 0.18);
+}
+.map-style-switch button {
+  height: 32px; padding: 0 14px; border-radius: 999px; border: 0; cursor: pointer;
+  font: 600 12.5px/1 var(--font-sans); color: var(--color-ink-2); background: transparent;
+  transition: background-color .15s, color .15s;
+}
+.map-style-switch button:hover { color: var(--color-ink); }
+.map-style-switch button[aria-pressed='true'] { background: #111318; color: #fff; }
+.map-style-switch button:focus-visible { outline: 2px solid var(--color-violet); outline-offset: 1px; }
+html[lang='ur'] .map-style-switch button { font-family: 'Noto Nastaliq Urdu', var(--font-sans); font-size: 12px; }
+.mapboxgl-popup-content { border-radius: 14px !important; padding: 0 !important; overflow: hidden; box-shadow: var(--shadow-lift) !important; }
+.mapboxgl-ctrl-logo { opacity: .7; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
